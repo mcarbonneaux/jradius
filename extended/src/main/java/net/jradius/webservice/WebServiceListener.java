@@ -24,6 +24,8 @@ package net.jradius.webservice;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,7 +55,7 @@ import org.springframework.beans.factory.InitializingBean;
 public class WebServiceListener extends TCPListener implements InitializingBean, CacheEventListener
 {
     protected String cacheName = "ws-requests";
-    protected Map requestMap;
+    protected Map<String, WebServiceRequestObject> requestMap;
     protected CacheManager cacheManager;
     protected Ehcache requestCache;
     protected Integer timeToLive;
@@ -61,7 +63,7 @@ public class WebServiceListener extends TCPListener implements InitializingBean,
     
     public JRadiusEvent parseRequest(ListenerRequest listenerRequest, ByteBuffer byteBuffer, InputStream inputStream) throws IOException, WebServiceException
     {
-        DataInputStream reader = new DataInputStream(inputStream);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         WebServiceRequest request = new WebServiceRequest();
         
         String line = null;
@@ -110,13 +112,14 @@ public class WebServiceListener extends TCPListener implements InitializingBean,
         return request;
     }
     
-    private Map<String, String> getHeaders(DataInputStream reader) throws IOException
+    private Map<String, String> getHeaders(BufferedReader reader) throws IOException
     {
         LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
         String line;
         do
         {
-            line = reader.readLine().trim();
+            line = reader.readLine();
+            if (line != null) line = line.trim();
             if (line != null && line.length() > 0)
             {
                 String[] parts = line.split(":", 2);
@@ -133,11 +136,17 @@ public class WebServiceListener extends TCPListener implements InitializingBean,
         return map;
     }
     
-    private byte[] getContent(DataInputStream reader, int clen) throws IOException
+    private byte[] getContent(BufferedReader reader, int clen) throws IOException
     {
-        byte[] buf = new byte[clen];
-        reader.readFully(buf);
-        return buf;
+        char[] buf = new char[clen];
+        int read = 0;
+        while (read < clen)
+        {
+            int r = reader.read(buf, read, clen - read);
+            if (r == -1) break;
+            read += r;
+        }
+        return new String(buf).getBytes();
     }
     
     public void remove(OTPProxyRequest request)
@@ -164,13 +173,13 @@ public class WebServiceListener extends TCPListener implements InitializingBean,
             return (WebServiceRequestObject)requestMap.get(username);
         }
         Element e = requestCache.get(username);
-        return e == null ? null : (WebServiceRequestObject)e.getValue();
+        return e == null ? null : (WebServiceRequestObject)e.getObjectValue();
     }
 
     private void deleteElement(Element e)
     {
     	if (e == null) return;
-        WebServiceRequestObject o = (WebServiceRequestObject)e.getValue();
+        WebServiceRequestObject o = (WebServiceRequestObject)e.getObjectValue();
         if (o == null) return;
         o.delete();
     }
@@ -219,8 +228,8 @@ public class WebServiceListener extends TCPListener implements InitializingBean,
 
     public void afterPropertiesSet() throws Exception
     {
-        if (idleTime == null) idleTime = new Integer(120);
-        if (timeToLive == null) timeToLive = new Integer(180);
+        if (idleTime == null) idleTime = Integer.valueOf(120);
+        if (timeToLive == null) timeToLive = Integer.valueOf(180);
         if (requestMap != null) return;
         
         if (requestCache == null) 
@@ -292,12 +301,12 @@ public class WebServiceListener extends TCPListener implements InitializingBean,
         this.timeToLive = timeToLive;
     }
 
-    public Map getRequestMap()
+    public Map<String, WebServiceRequestObject> getRequestMap()
     {
         return requestMap;
     }
 
-    public void setRequestMap(Map requestMap)
+    public void setRequestMap(Map<String, WebServiceRequestObject> requestMap)
     {
         this.requestMap = requestMap;
     }

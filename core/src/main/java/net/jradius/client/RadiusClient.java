@@ -236,7 +236,7 @@ public class RadiusClient
 
         try 
         {
-            auth = (RadiusAuthenticator)c.newInstance();
+            auth = (RadiusAuthenticator)c.getDeclaredConstructor().newInstance();
         }
         catch(Exception e) 
         { 
@@ -288,11 +288,11 @@ public class RadiusClient
                         Class<?> cType = pd.getPropertyType();
                         if (cType == Boolean.class)
                         {
-                            valueObject = new Boolean(value);
+                            valueObject = Boolean.valueOf(value);
                         }
                         else if (cType == Integer.class)
                         {
-                            valueObject = new Integer(value);
+                            valueObject = Integer.valueOf(value);
                         }
                         try
                         {

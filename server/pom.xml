@@ -5,13 +5,13 @@
   <groupId>net.jradius</groupId>
   <artifactId>jradius-server</artifactId>
   <name>${project.artifactId}-${project.version}</name>
-  <version>1.1.6-SNAPSHOT</version>
+  <version>${revision}</version>
   <description>Server classes</description>
   
   <parent>
     <groupId>net.jradius</groupId>
     <artifactId>jradius</artifactId>
-    <version>1.1.6-SNAPSHOT</version>
+    <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -19,44 +19,41 @@
     <dependency>
       <groupId>net.jradius</groupId>
       <artifactId>jradius-core</artifactId>
-      <version>1.1.6-SNAPSHOT</version>
     </dependency>
     
     <dependency>
       <groupId>net.jradius</groupId>
       <artifactId>jradius-dictionary</artifactId>
-      <version>1.1.6-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>net.jradius</groupId>
       <artifactId>jradius-extended</artifactId>
-      <version>1.1.6-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>net.jradius</groupId>
       <artifactId>jradius-example</artifactId>
-      <version>1.1.6-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
-      <version>3.0.5.RELEASE</version>
     </dependency>
 
   </dependencies>
   
   <build>
+    <resources>
+      <resource>
+        <directory>config</directory>
+        <filtering>false</filtering>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-compiler-plugin</artifactId>
-	<configuration>
-	  <source>1.5</source>
-	  <target>1.5</target>
-	</configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
@@ -89,7 +86,7 @@
             <id>make-assembly</id>
             <phase>package</phase>
             <goals>
-              <goal>attached</goal>
+              <goal>single</goal>
 	    </goals>
           </execution>
         </executions>

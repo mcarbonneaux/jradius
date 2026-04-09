@@ -148,7 +148,7 @@ public class WISPrStandard extends RadiusStandard
      */
     public void checkPacket(RadiusPacket p, long[] ignore) throws StandardViolatedException
     {
-        LinkedList missing = new LinkedList();
+        LinkedList<Long> missing = new LinkedList<>();
         
         switch(p.getCode())
         {

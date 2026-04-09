@@ -54,20 +54,20 @@ public final class AttributeFactory
     private static LinkedHashMap<Long, VendorValue> vendorValueMap = new LinkedHashMap<Long, VendorValue>();
     private static LinkedHashMap<String, Class<?>> attributeNameMap = new LinkedHashMap<String, Class<?>>();
 
-    private static RadiusAttribute vsa(long vendor, long type) throws InstantiationException, IllegalAccessException
+    private static RadiusAttribute vsa(long vendor, long type) throws Exception
     {
     	RadiusAttribute attr = null;
-        VendorValue v = vendorValueMap.get(new Long(vendor));
+        VendorValue v = vendorValueMap.get(Long.valueOf(vendor));
         Class<?> c = null;
 	         
         if (v != null)
         {
-        	c = v.typeMap.get(new Long(type));
+        	c = v.typeMap.get(Long.valueOf(type));
         }
   
         if (c != null)
         {
-        	attr = (RadiusAttribute) c.newInstance();
+        	attr = (RadiusAttribute) c.getDeclaredConstructor().newInstance();
         }
         else
         {
@@ -78,14 +78,14 @@ public final class AttributeFactory
         return attr;
     }
 
-    private static RadiusAttribute attr(long type) throws InstantiationException, IllegalAccessException
+    private static RadiusAttribute attr(long type) throws Exception
     {
     	RadiusAttribute attr = null;
-        Class<?> c = attributeMap.get(new Long(type));
+        Class<?> c = attributeMap.get(Long.valueOf(type));
     	
         if (c != null)
         {
-        	attr = (RadiusAttribute) c.newInstance();
+        	attr = (RadiusAttribute) c.getDeclaredConstructor().newInstance();
         }
         else
         {
@@ -96,24 +96,24 @@ public final class AttributeFactory
         return attr;
     }
     
-    public static class AttributeFactoryPool extends GenericKeyedObjectPool
+    public static class AttributeFactoryPool extends GenericKeyedObjectPool<Long, RadiusAttribute>
     {
     	public AttributeFactoryPool()
     	{
-    		super(new KeyedPoolableObjectFactory() 
+    		super(new KeyedPoolableObjectFactory<Long, RadiusAttribute>() 
     	    {
-    			public boolean validateObject(Object arg0, Object arg1) 
+    			public boolean validateObject(Long arg0, RadiusAttribute arg1) 
     			{
     				return true;
     			}
     			
-    			public void passivateObject(Object arg0, Object arg1) throws Exception 
+    			public void passivateObject(Long arg0, RadiusAttribute arg1) throws Exception 
     			{
     				RadiusAttribute a = (RadiusAttribute) arg1;
     				a.recycled = true;
     			}
     			
-    			public Object makeObject(Object arg0) throws Exception 
+    			public RadiusAttribute makeObject(Long arg0) throws Exception 
     			{
     				RadiusAttribute a = newAttribute((Long) arg0);
     				a.recyclable = true;
@@ -121,11 +121,11 @@ public final class AttributeFactory
     				return a;
     			}
     			
-    			public void destroyObject(Object arg0, Object arg1) throws Exception 
+    			public void destroyObject(Long arg0, RadiusAttribute arg1) throws Exception 
     			{
     			}
     			
-    			public void activateObject(Object arg0, Object arg1) throws Exception 
+    			public void activateObject(Long arg0, RadiusAttribute arg1) throws Exception 
     			{
     				RadiusAttribute a = (RadiusAttribute) arg1;
     				a.recycled = false;
@@ -138,7 +138,7 @@ public final class AttributeFactory
     	}
     }
 
-    private static KeyedObjectPool attributeObjectPool = new AttributeFactoryPool();
+    private static KeyedObjectPool<Long, RadiusAttribute> attributeObjectPool = new AttributeFactoryPool();
     
     public static RadiusAttribute newAttribute(Long key) throws Exception
     {
@@ -195,7 +195,7 @@ public final class AttributeFactory
     
     public static RadiusAttribute copyAttribute(RadiusAttribute a, boolean pool)
     {
-    	Long key = new Long(a.getFormattedType());
+    	Long key = Long.valueOf(a.getFormattedType());
     	RadiusAttribute attr = null;
     	
     	try
@@ -226,7 +226,7 @@ public final class AttributeFactory
     	
         if (attributeObjectPool != null)
         {
-        	attr = (RadiusAttribute) attributeObjectPool.borrowObject(key);
+        	attr = attributeObjectPool.borrowObject(key);
         	// System.err.println("Borrowed "+attr.toString() + " " + key + " " + attr.getFormattedType());
         }
 
@@ -262,7 +262,7 @@ public final class AttributeFactory
         try
         {
             Class<?> clazz = Class.forName(className);
-            Object o = clazz.newInstance();
+            Object o = clazz.getDeclaredConstructor().newInstance();
             return loadAttributeDictionary((AttributeDictionary)o);
         } 
         catch (Exception e)
@@ -287,7 +287,7 @@ public final class AttributeFactory
             {
                 LinkedHashMap<Long, Class<?>> typeMap = new LinkedHashMap<Long, Class<?>>();
                 LinkedHashMap<String, Class<?>> nameMap = new LinkedHashMap<String, Class<?>>();
-                VSADictionary vsadict = (VSADictionary)c.newInstance();
+                VSADictionary vsadict = (VSADictionary)c.getDeclaredConstructor().newInstance();
                 vsadict.loadAttributes(typeMap);
                 vsadict.loadAttributesNames(nameMap);
                 vsadict.loadAttributesNames(attributeNameMap);
@@ -377,7 +377,7 @@ public final class AttributeFactory
                     type = RadiusFormat.readUnsignedByte(input);
                 }
 
-                Long key = new Long(vendor << 16 | type);
+                Long key = Long.valueOf(vendor << 16 | type);
 
                 if (pool)
                 {
@@ -466,7 +466,7 @@ public final class AttributeFactory
                     type = RadiusFormat.getUnsignedByte(buffer);
                 }
 
-                Long key = new Long(vendor << 16 | type);
+                Long key = Long.valueOf(vendor << 16 | type);
                 
                 if (pool)
                 {
@@ -649,7 +649,7 @@ public final class AttributeFactory
         
         try 
         {
-            attr = (RadiusAttribute)c.newInstance();
+            attr = (RadiusAttribute)c.getDeclaredConstructor().newInstance();
         }
         catch (Exception e)
         {
@@ -704,7 +704,7 @@ public final class AttributeFactory
         
         try
         {
-            attr = (RadiusAttribute)c.newInstance();
+            attr = (RadiusAttribute)c.getDeclaredConstructor().newInstance();
             return attr.getFormattedType();
         }
         catch (Exception e)
@@ -783,7 +783,7 @@ public final class AttributeFactory
 				list.clear();
 			}
 			
-			attributeObjectPool.returnObject(new Long(a.getFormattedType()), a);
+			attributeObjectPool.returnObject(Long.valueOf(a.getFormattedType()), a);
 		} 
 		catch (Exception e) 
 		{

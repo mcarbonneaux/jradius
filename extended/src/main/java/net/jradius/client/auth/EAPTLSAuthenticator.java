@@ -42,7 +42,7 @@ import net.jradius.exception.RadiusException;
 import net.jradius.log.RadiusLog;
 import net.jradius.packet.RadiusPacket;
 import net.jradius.tls.AlwaysValidVerifyer;
-import net.jradius.tls.Certificate;
+import net.jradius.tls.JRadiusCertificate;
 import net.jradius.tls.DefaultTlsClient;
 import net.jradius.tls.TlsProtocolHandler;
 import net.jradius.util.KeyStoreUtil;
@@ -60,13 +60,13 @@ import org.bouncycastle.asn1.oiw.OIWObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.DHParameter;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
-import org.bouncycastle.asn1.pkcs.RSAPrivateKeyStructure;
+import org.bouncycastle.asn1.pkcs.RSAPrivateKey;
 import org.bouncycastle.asn1.sec.ECPrivateKey;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.teletrust.TeleTrusTNamedCurves;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.asn1.x509.DSAParameter;
-import org.bouncycastle.asn1.x509.X509CertificateStructure;
 import org.bouncycastle.asn1.x9.X962NamedCurves;
 import org.bouncycastle.asn1.x9.X962Parameters;
 import org.bouncycastle.asn1.x9.X9ECParameters;
@@ -163,30 +163,30 @@ public class EAPTLSAuthenticator extends EAPAuthenticator
 			{
 				if (keyManagers != null && keyManagers.length > 0)
 				{
-					X509CertificateStructure[] certs = null;
+					Certificate[] certs = null;
 					X509Certificate[] certChain = ((X509KeyManager)keyManagers[0]).getCertificateChain("");
 					PrivateKey key = ((X509KeyManager)keyManagers[0]).getPrivateKey("");
-					Vector tmp = new Vector();
+					Vector<Certificate> tmp = new Vector<>();
 
 					for (X509Certificate cert : certChain)
 					{
 			            ByteArrayInputStream bis = new ByteArrayInputStream(cert.getEncoded());
 			            ASN1InputStream ais = new ASN1InputStream(bis);
 			            ASN1Primitive o = ais.readObject();
-			            tmp.addElement(X509CertificateStructure.getInstance(o));
+			            tmp.add(Certificate.getInstance(o));
 			            if (bis.available() > 0)
 			            {
 			                throw new IllegalArgumentException(
 			                    "Sorry, there is garbage data left after the certificate");
 			            }
 			        }
-			        certs = new X509CertificateStructure[tmp.size()];
+			        certs = new Certificate[tmp.size()];
 			        for (int i = 0; i < tmp.size(); i++)
 			        {
-			            certs[i] = (X509CertificateStructure)tmp.elementAt(i);
+			            certs[i] = (Certificate)tmp.elementAt(i);
 			        }
 
-					tlsClient.enableClientAuthentication(new Certificate(certs), createKey(key.getEncoded()));
+					tlsClient.enableClientAuthentication(new JRadiusCertificate(certs), createKey(key.getEncoded()));
 		        }
 			}
 			catch (Exception e)
@@ -595,7 +595,7 @@ public class EAPTLSAuthenticator extends EAPAuthenticator
         AlgorithmIdentifier     algId = keyInfo.getPrivateKeyAlgorithm();
         if (algId.getAlgorithm().equals(PKCSObjectIdentifiers.rsaEncryption))
         {
-            RSAPrivateKeyStructure  keyStructure = new RSAPrivateKeyStructure((ASN1Sequence)keyInfo.getPrivateKey());
+            RSAPrivateKey  keyStructure = RSAPrivateKey.getInstance(keyInfo.parsePrivateKey());
 
             return new RSAPrivateCrtKeyParameters(
                                         keyStructure.getModulus(),
@@ -680,7 +680,7 @@ public class EAPTLSAuthenticator extends EAPAuthenticator
                                             ecP.getH(),
                                             ecP.getSeed());
             }
-            ECPrivateKey ec = ECPrivateKey.getInstance(keyInfo.getPrivateKeyAlgorithm());
+            ECPrivateKey ec = ECPrivateKey.getInstance(keyInfo.parsePrivateKey());
 
             return new ECPrivateKeyParameters(ec.getKey(), dParams);
         }

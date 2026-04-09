@@ -89,23 +89,23 @@ public abstract class TCPListener extends JRadiusThread implements Listener
     protected String[] sslEnabledProtocols;
     protected String[] sslEnabledCiphers;
 
-    protected ObjectPool requestObjectPool = new SoftReferenceObjectPool(new PoolableObjectFactory() 
+    protected ObjectPool<ListenerRequest> requestObjectPool = new SoftReferenceObjectPool<ListenerRequest>(new PoolableObjectFactory<ListenerRequest>() 
     {
-		public boolean validateObject(Object arg0) {
+		public boolean validateObject(ListenerRequest arg0) {
 			return true;
 		}
 		
-		public void passivateObject(Object arg0) throws Exception {
+		public void passivateObject(ListenerRequest arg0) throws Exception {
 		}
 		
-		public Object makeObject() throws Exception {
+		public ListenerRequest makeObject() throws Exception {
 			return new TCPListenerRequest();
 		}
 		
-		public void destroyObject(Object arg0) throws Exception {
+		public void destroyObject(ListenerRequest arg0) throws Exception {
 		}
 		
-		public void activateObject(Object arg0) throws Exception {
+		public void activateObject(ListenerRequest arg0) throws Exception {
 			TCPListenerRequest req = (TCPListenerRequest) arg0;
 			req.clear();
 		}
@@ -129,18 +129,18 @@ public abstract class TCPListener extends JRadiusThread implements Listener
         keepAlive = !noKeepAlive;
         config = cfg;
         
-        Map props = config.getProperties();
+        Map<String, String> props = config.getProperties();
         
         String s = (String) props.get("port");
-        if (s != null) port = new Integer(s).intValue();
+        if (s != null) port = Integer.valueOf(s).intValue();
         
         s = (String) props.get("backlog");
-        if (s != null) backlog = new Integer(s).intValue();
+        if (s != null) backlog = Integer.valueOf(s).intValue();
         
         if (keepAlive) 
         {
             s = (String) props.get("keepAlive");
-            if (s != null) keepAlive = new Boolean(s).booleanValue();
+            if (s != null) keepAlive = Boolean.valueOf(s).booleanValue();
         }
 
         String useSSL = (String) props.get("useSSL");

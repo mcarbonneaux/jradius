@@ -202,7 +202,7 @@ public class WebServiceRequest extends JRadiusEvent
                     String v = param.substring(i+1, param.length());
                 	try
                 	{
-	                    map.put(k, URLDecoder.decode(v));
+	                    map.put(k, URLDecoder.decode(v, "UTF-8"));
                 	}
                 	catch (Exception e)
                 	{

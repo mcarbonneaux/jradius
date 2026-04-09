@@ -229,7 +229,7 @@ public class RadiusSession implements JRadiusSession, Serializable
         else key = Integer.toString((char)request.getRequestPacket().getIdentifier());
 
         JRadiusLogEntry entry = getLogEntry(request, key);
-        entry.setCode(new Integer(request.getReturnValue()));
+        entry.setCode(Integer.valueOf(request.getReturnValue()));
         return entry;
     }
     
@@ -251,7 +251,7 @@ public class RadiusSession implements JRadiusSession, Serializable
             JRadiusLogEntry entry = mapEntry.getValue();
             if (entry.isFinished() && !entry.isCommitted())
             {
-                entry.setCode(new Integer(result));
+                entry.setCode(Integer.valueOf(result));
                 commitLogEntry(entry, result);
                 entry.setCommitted(true);
             }
@@ -359,7 +359,7 @@ public class RadiusSession implements JRadiusSession, Serializable
                     if (sessionTime != null)
                     {
                         // Compensate the sessionTimeout for re-authentications
-                        sessionTimeout = new Long(sessionTimeout.longValue() - sessionTime.longValue());
+                        sessionTimeout = Long.valueOf(sessionTimeout.longValue() - sessionTime.longValue());
                     }
                 }
             }
@@ -413,7 +413,7 @@ public class RadiusSession implements JRadiusSession, Serializable
         setUsername(stripUsername);
         setRealm(realm);
 
-        Long zero = new Long(0);
+        Long zero = Long.valueOf(0);
         
         setSessionTime(zero);
         setPacketsIn(zero);
@@ -469,7 +469,7 @@ public class RadiusSession implements JRadiusSession, Serializable
                 if (newGigawords != (currentGigawords + 1))
                 {
                     addLogMessage(request, "Fixing Gigawords-In");
-                    req.overwriteAttribute(new Attr_AcctInputGigawords(gigaIn = new Long(currentGigawords + 1)));
+                    req.overwriteAttribute(new Attr_AcctInputGigawords(gigaIn = Long.valueOf(currentGigawords + 1)));
                 }
             }
             if (octsOut.longValue() < cOctsOut.longValue())
@@ -480,7 +480,7 @@ public class RadiusSession implements JRadiusSession, Serializable
                 if (newGigawords != (currentGigawords + 1))
                 {
                     addLogMessage(request, "Fixing Gigawords-Out");
-                    req.overwriteAttribute(new Attr_AcctOutputGigawords(gigaOut = new Long(currentGigawords + 1)));
+                    req.overwriteAttribute(new Attr_AcctOutputGigawords(gigaOut = Long.valueOf(currentGigawords + 1)));
                 }
             }
         }
@@ -792,7 +792,7 @@ public class RadiusSession implements JRadiusSession, Serializable
         {
             l |= gigaWordsIn.longValue() << 32;
         }
-        return new Long(l);
+        return Long.valueOf(l);
     }
 
     public Long getTotalOctetsOut()
@@ -803,7 +803,7 @@ public class RadiusSession implements JRadiusSession, Serializable
         {
             l |= gigaWordsOut.longValue() << 32;
         }
-        return new Long(l);
+        return Long.valueOf(l);
     }
     
     /**

@@ -63,7 +63,7 @@ public class ExampleRadiusClient
             AttributeList attrs = new AttributeList();
             attrs.add(new Attr_UserName("test"));
             attrs.add(new Attr_NASPortType(Attr_NASPortType.Wireless80211));
-            attrs.add(new Attr_NASPort(new Long(1)));
+            attrs.add(new Attr_NASPort(Long.valueOf(1)));
             
             RadiusRequest request = new AccessRequest(rc, attrs);
             request.addAttribute(new Attr_UserPassword("test"));
@@ -100,9 +100,9 @@ public class ExampleRadiusClient
 
             request = new AccountingRequest(rc, attrs);
             request.addAttribute(new Attr_AcctStatusType("Interim-Update"));
-            request.addAttribute(new Attr_AcctInputOctets(new Long(42949670L)));
-            request.addAttribute(new Attr_AcctOutputOctets(new Long(5)));
-            request.addAttribute(new Attr_AcctSessionTime(new Long(10)));
+            request.addAttribute(new Attr_AcctInputOctets(Long.valueOf(42949670L)));
+            request.addAttribute(new Attr_AcctOutputOctets(Long.valueOf(5)));
+            request.addAttribute(new Attr_AcctSessionTime(Long.valueOf(10)));
 
             System.out.println("Sending:\n" + request.toString());
 
@@ -112,9 +112,9 @@ public class ExampleRadiusClient
 
             request = new AccountingRequest(rc, attrs);
             request.addAttribute(new Attr_AcctStatusType("Interim-Update"));
-            request.addAttribute(new Attr_AcctInputOctets(new Long(429496700L)));
-            request.addAttribute(new Attr_AcctOutputOctets(new Long(5)));
-            request.addAttribute(new Attr_AcctSessionTime(new Long(30)));
+            request.addAttribute(new Attr_AcctInputOctets(Long.valueOf(429496700L)));
+            request.addAttribute(new Attr_AcctOutputOctets(Long.valueOf(5)));
+            request.addAttribute(new Attr_AcctSessionTime(Long.valueOf(30)));
 
             System.out.println("Sending:\n" + request.toString());
 
@@ -124,9 +124,9 @@ public class ExampleRadiusClient
 
             request = new AccountingRequest(rc, attrs);
             request.addAttribute(new Attr_AcctStatusType("Stop"));
-            request.addAttribute(new Attr_AcctInputOctets(new Long(4294967000L)));
-            request.addAttribute(new Attr_AcctOutputOctets(new Long(10)));
-            request.addAttribute(new Attr_AcctSessionTime(new Long(60)));
+            request.addAttribute(new Attr_AcctInputOctets(Long.valueOf(4294967000L)));
+            request.addAttribute(new Attr_AcctOutputOctets(Long.valueOf(10)));
+            request.addAttribute(new Attr_AcctSessionTime(Long.valueOf(60)));
             request.addAttribute(new Attr_AcctTerminateCause(Attr_AcctTerminateCause.UserRequest));
 
             System.out.println("Sending:\n" + request.toString());

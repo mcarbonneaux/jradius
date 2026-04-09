@@ -44,13 +44,13 @@ public class SimpleTrustManager implements X509TrustManager, InitializingBean
 
     public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException { 
     	for (X509Certificate c : chain)
-    		System.err.println("Checking Client: "+c.getSubjectDN());
+    		System.err.println("Checking Client: "+c.getSubjectX500Principal().getName());
 		trustManager.checkClientTrusted(chain, authType);
     }
     
     public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
     	for (X509Certificate c : chain)
-    		System.err.println("Checking Server: "+c.getSubjectDN());
+    		System.err.println("Checking Server: "+c.getSubjectX500Principal().getName());
 		trustManager.checkServerTrusted(chain, authType);
     }
 
@@ -58,7 +58,7 @@ public class SimpleTrustManager implements X509TrustManager, InitializingBean
     	if (trustAll.booleanValue()) return new X509Certificate[0];
     	X509Certificate[] chain = trustManager.getAcceptedIssuers();
     	for (X509Certificate c : chain)
-    		System.err.println("Accepted Issuer: "+c.getSubjectDN());
+    		System.err.println("Accepted Issuer: "+c.getSubjectX500Principal().getName());
     	return chain; 
     }
 

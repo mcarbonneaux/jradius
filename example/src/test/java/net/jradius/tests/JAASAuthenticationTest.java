@@ -56,6 +56,7 @@ public class JAASAuthenticationTest
 		
 	}
 	
+    @SuppressWarnings("removal")
     public static void main(String[] args) 
     {
         AttributeFactory.loadAttributeDictionary("net.jradius.dictionary.AttributeDictionaryImpl");
@@ -109,19 +110,21 @@ public class JAASAuthenticationTest
 
     	Subject mySubject = lc.getSubject();
 
-    	Iterator principalIterator = mySubject.getPrincipals().iterator();
+    	Iterator<Principal> principalIterator = mySubject.getPrincipals().iterator();
     	System.out.println("Authenticated user has the following Principals:");
 
     	while (principalIterator.hasNext()) 
     	{
-    	    Principal p = (Principal)principalIterator.next();
+    	    Principal p = principalIterator.next();
     	    System.out.println("\t" + p.toString());
     	}
 
     	System.out.println("User has " + mySubject.getPublicCredentials().size() + " Public Credential(s)");
 
-    	PrivilegedAction action = new TestAction();
-    	Subject.doAsPrivileged(mySubject, action, null);
+    	PrivilegedAction<Object> action = new TestAction();
+        @SuppressWarnings("removal")
+        Object result = Subject.doAsPrivileged(mySubject, action, null);
+        if (result != null) { /* do nothing */ }
     	System.exit(0);
     }
 }

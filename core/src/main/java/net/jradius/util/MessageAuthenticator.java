@@ -54,7 +54,7 @@ public class MessageAuthenticator
 
         attr.setValue(pval);
         
-        return new Boolean(Arrays.equals(pval, hash));
+        return Boolean.valueOf(Arrays.equals(pval, hash));
     }
 
     public static Boolean verifyReply(byte[] requestAuth, RadiusPacket reply, String sharedSecret) throws IOException, InvalidKeyException, NoSuchAlgorithmException
@@ -77,6 +77,6 @@ public class MessageAuthenticator
 
         reply.setAuthenticator(replyAuth);
         
-        return new Boolean(Arrays.equals(pval, hash));
+        return Boolean.valueOf(Arrays.equals(pval, hash));
     }
 }

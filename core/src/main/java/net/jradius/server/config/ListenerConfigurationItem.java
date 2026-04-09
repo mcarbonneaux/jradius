@@ -135,7 +135,7 @@ public class ListenerConfigurationItem extends ConfigurationItem
                 command.setConfig(cfg);
                 
                 if (requestHandlers == null)
-                    requestHandlers = new LinkedList();
+                    requestHandlers = new LinkedList<JRCommand>();
 
                 requestHandlers.add(command);
             }            
@@ -197,7 +197,7 @@ public class ListenerConfigurationItem extends ConfigurationItem
                 command.setConfig(cfg);
                 
                 if (requestHandlers == null)
-                    requestHandlers = new LinkedList();
+                    requestHandlers = new LinkedList<JRCommand>();
 
                 requestHandlers.add(command);
             }
@@ -262,7 +262,7 @@ public class ListenerConfigurationItem extends ConfigurationItem
                 command.setConfig(cfg);
                 
                 if (eventHandlers == null)
-                    eventHandlers = new LinkedList();
+                    eventHandlers = new LinkedList<JRCommand>();
 
                 eventHandlers.add(command);
             }

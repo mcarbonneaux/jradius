@@ -279,7 +279,7 @@ public class RadClient
                 Class<?> c = Class.forName(check);
                 try
                 {
-                    standard = (RadiusStandard)c.newInstance();
+                    standard = (RadiusStandard)c.getDeclaredConstructor().newInstance();
                 }
                 catch (Exception e)
                 {

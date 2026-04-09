@@ -25,7 +25,7 @@ import java.security.PrivilegedAction;
 /**
  * @author David Bird
  */
-class TestAction implements PrivilegedAction {
+class TestAction implements PrivilegedAction<Object> {
 	
 	public TestAction() {
 	}

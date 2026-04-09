@@ -67,9 +67,9 @@ public class Configuration
     private static int timeoutSeconds;
     private static File configFile;
     private static Map<String, ListenerConfigurationItem> listeners = new LinkedHashMap<String, ListenerConfigurationItem>();
-    private static Map packetHandlers = new LinkedHashMap();
-    private static Map eventHandlers = new LinkedHashMap();
-    private static Map dictionaries = new LinkedHashMap();
+    private static Map<String, PacketHandlerConfigurationItem> packetHandlers = new LinkedHashMap<String, PacketHandlerConfigurationItem>();
+    private static Map<String, HandlerConfigurationItem> eventHandlers = new LinkedHashMap<String, HandlerConfigurationItem>();
+    private static Map<String, DictionaryConfigurationItem> dictionaries = new LinkedHashMap<String, DictionaryConfigurationItem>();
 
     private static BeanFactory beanFactory;
     private static JRConfigParser parser = new JRConfigParser();
@@ -129,7 +129,7 @@ public class Configuration
      * to the &lt;packet-handler&gt; elements in the configuration file.
      * @return A collection of PacketHandlerConfigurationItems
      */
-    public static Collection getPacketHandlers()
+    public static Collection<PacketHandlerConfigurationItem> getPacketHandlers()
     {
         return packetHandlers.values();
     }
@@ -139,19 +139,19 @@ public class Configuration
      * to the &lt;event-handler&gt; elements in the configuration file.
      * @return A collection of HandlerConfigurationItems
      */
-    public static Collection getEventHandlers()
+    public static Collection<HandlerConfigurationItem> getEventHandlers()
     {
         return eventHandlers.values();
     }
 
     public static PacketHandlerConfigurationItem packetHandlerConfigurationForName(String name)
     {
-        return (PacketHandlerConfigurationItem) packetHandlers.get(name);
+        return packetHandlers.get(name);
     }
     
     public static HandlerConfigurationItem eventHandlerConfigurationForName(String name)
     {
-        return (HandlerConfigurationItem) eventHandlers.get(name);
+        return eventHandlers.get(name);
     }
     
     public static JRCommand packetHandlerForName(String name)
@@ -222,7 +222,7 @@ public class Configuration
     
     public static ListenerConfigurationItem listenerConfigurationForName(String name)
     {
-        return (ListenerConfigurationItem) listeners.get(name);
+        return listeners.get(name);
     }
 
     /**
@@ -230,14 +230,14 @@ public class Configuration
      * to the &lt;load-dictionaries&gt; elements in the configuration file.
      * @return A collection of DictionaryConfigurationItems
      */
-    public static Collection getDictionaryConfigs()
+    public static Collection<DictionaryConfigurationItem> getDictionaryConfigs()
     {
         return dictionaries.values();
     }
     
     public static DictionaryConfigurationItem dictionaryConfigurationForName(String name)
     {
-        return (DictionaryConfigurationItem) dictionaries.get(name);
+        return dictionaries.get(name);
     }
 
     /**
@@ -488,7 +488,7 @@ public class Configuration
         }
     }
 
-    public static Object getBean(String name) throws IllegalAccessException, ClassNotFoundException, InstantiationException
+    public static Object getBean(String name) throws Exception
     {
         Object o = null;
         if (name == null) return null;
@@ -499,9 +499,9 @@ public class Configuration
         }
         else
         {
-            Class clazz = Class.forName(name);
+            Class<?> clazz = Class.forName(name);
             if (clazz == null) return null;
-            o = clazz.newInstance();
+            o = clazz.getDeclaredConstructor().newInstance();
             if (o instanceof BeanFactoryAware)
             {
                 try

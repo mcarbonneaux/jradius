@@ -15,8 +15,10 @@ import javax.net.ssl.TrustManager;
 
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.x509.X509Name;
+import org.bouncycastle.asn1.x509.Certificate;
+import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.crypto.prng.ThreadedSeedGenerator;
+import org.bouncycastle.util.Arrays;
 
 /**
  * An implementation of all high level protocols in TLS 1.0.
@@ -292,7 +294,7 @@ public class TlsProtocolHandler
                     {
                         // Parse the Certificate message and send to cipher suite
 
-                        Certificate serverCertificate = Certificate.parse(is);
+                        JRadiusCertificate serverCertificate = JRadiusCertificate.parse(is);
 
                         assertEmpty(is);
 
@@ -406,7 +408,7 @@ public class TlsProtocolHandler
                         if (extendedClientHello)
                         {
                             // Integer -> byte[]
-                            Hashtable serverExtensions = new Hashtable();
+                        Hashtable<Integer, byte[]> serverExtensions = new Hashtable<>();
 
                             if (is.available() > 0)
                             {
@@ -419,7 +421,7 @@ public class TlsProtocolHandler
                                     int extType = TlsUtils.readUint16(ext);
                                     byte[] extValue = TlsUtils.readOpaque16(ext);
 
-                                    serverExtensions.put(new Integer(extType), extValue);
+                                    serverExtensions.put(Integer.valueOf(extType), extValue);
                                 }
                             }
 
@@ -573,13 +575,13 @@ public class TlsProtocolHandler
 
                         assertEmpty(is);
 
-                        ArrayList authorityDNs = new ArrayList();
+                        ArrayList<X500Name> authorityDNs = new ArrayList<>();
 
                         ByteArrayInputStream bis = new ByteArrayInputStream(authorities);
                         while (bis.available() > 0)
                         {
                             byte[] dnBytes = TlsUtils.readOpaque16(bis);
-                            authorityDNs.add(X509Name.getInstance(ASN1Primitive.fromByteArray(dnBytes)));
+                            authorityDNs.add(X500Name.getInstance(ASN1Primitive.fromByteArray(dnBytes)));
                         }
 
                         this.tlsClient.processServerCertificateRequest(types, authorityDNs);
@@ -716,7 +718,7 @@ public class TlsProtocolHandler
         }
     }
 
-    private void sendClientCertificate(Certificate clientCert) throws IOException
+    private void sendClientCertificate(JRadiusCertificate clientCert) throws IOException
     {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         TlsUtils.writeUint8(HP_CERTIFICATE, bos);
@@ -786,12 +788,9 @@ public class TlsProtocolHandler
     /**
      * Connects to the remote system using client authentication
      * 
-     * @param verifyer Will be used when a certificate is received to verify that this
-     *            certificate is accepted by the client.
-     * @param clientCertificate The client's certificate to be provided to the remote
-     *            system
-     * @param clientPrivateKey The client's private key for the certificate to
-     *            authenticate to the remote system (RSA or DSA)
+     * @param is Input stream
+     * @param out Output stream
+     * @param tlsClient The TLS client
      * @throws IOException If handshake was not successful.
      */
     public // TODO Make public

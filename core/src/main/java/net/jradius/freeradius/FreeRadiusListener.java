@@ -47,31 +47,31 @@ public class FreeRadiusListener extends TCPListener
 {
     private static final FreeRadiusFormat format = new FreeRadiusFormat();
     
-    private ObjectPool requestObjectPool = new SoftReferenceObjectPool(new PoolableObjectFactory() 
+    private ObjectPool<FreeRadiusRequest> requestObjectPool = new SoftReferenceObjectPool<FreeRadiusRequest>(new PoolableObjectFactory<FreeRadiusRequest>() 
     {
-		public boolean validateObject(Object arg0) {
+		public boolean validateObject(FreeRadiusRequest arg0) {
 			return true;
 		}
 		
-		public void passivateObject(Object arg0) throws Exception {
+		public void passivateObject(FreeRadiusRequest arg0) throws Exception {
 		}
 		
-		public Object makeObject() throws Exception {
+		public FreeRadiusRequest makeObject() throws Exception {
 			return new FreeRadiusRequest();
 		}
 		
-		public void destroyObject(Object arg0) throws Exception {
+		public void destroyObject(FreeRadiusRequest arg0) throws Exception {
 		}
 		
-		public void activateObject(Object arg0) throws Exception {
+		public void activateObject(FreeRadiusRequest arg0) throws Exception {
 		}
 	});
     
 
     public JRadiusEvent parseRequest(ListenerRequest listenerRequest, ByteBuffer notUsed, InputStream in) throws Exception 
     {
-    	FreeRadiusRequest request = (FreeRadiusRequest) requestObjectPool.borrowObject();
-    	request.setBorrowedFromPool(requestObjectPool);
+    	FreeRadiusRequest request = requestObjectPool.borrowObject();
+        // request.setBorrowedFromPool(requestObjectPool); 
 
         int totalLength  = (int) (RadiusFormat.readUnsignedInt(in) - 4);
         int readOffset = 0;

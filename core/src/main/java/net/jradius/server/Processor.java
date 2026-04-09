@@ -132,7 +132,7 @@ public abstract class Processor extends JRadiusThread implements ApplicationCont
 		}
 		finally
 		{
-			ObjectPool pool = request.getBorrowedFromPool();
+			ObjectPool<ListenerRequest> pool = request.getBorrowedFromPool();
 			
 	        if (pool != null)
 	        {

@@ -54,7 +54,7 @@ public class SimpleKeyManager implements X509KeyManager, InitializingBean
 
 	public X509Certificate[] getCertificateChain(String arg0) {
 		X509Certificate[] certs = keyManager.getCertificateChain(arg0);
-		for (X509Certificate cert : certs) System.err.println(arg0+" cert: "+cert.getSubjectDN());
+		for (X509Certificate cert : certs) System.err.println(arg0+" cert: "+cert.getSubjectX500Principal().getName());
 		return certs;
 	}
 

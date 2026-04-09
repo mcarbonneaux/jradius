@@ -24,6 +24,7 @@ package net.jradius.session;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import net.jradius.exception.RadiusException;
 import net.jradius.log.JRadiusLogEntry;
@@ -48,10 +49,10 @@ public class JRadiusSessionManager implements InitializingBean, ApplicationConte
 {
     private static JRadiusSessionManager defaultManager;
 
-    private static HashMap<String, JRadiusSessionManager> managers = new HashMap<String, JRadiusSessionManager>();
+    private static Map<Object, JRadiusSessionManager> managers = new HashMap<Object, JRadiusSessionManager>();
 
-    private HashMap<String, SessionKeyProvider> providers = new HashMap<String, SessionKeyProvider>();
-    private HashMap<String, SessionFactory> factories = new HashMap<String, SessionFactory>();
+    private Map<Object, SessionKeyProvider> providers = new HashMap<Object, SessionKeyProvider>();
+    private Map<Object, SessionFactory> factories = new HashMap<Object, SessionFactory>();
 
     private ApplicationContext applicationContext;
 
@@ -153,9 +154,9 @@ public class JRadiusSessionManager implements InitializingBean, ApplicationConte
             // the default RadiusSessionKeyProvider and RadiusSessionFactory
             Class<?> c;
             c = Class.forName("net.jradius.session.RadiusSessionKeyProvider");
-            providers.put(null, (SessionKeyProvider) c.newInstance());
+            providers.put(null, (SessionKeyProvider) c.getDeclaredConstructor().newInstance());
             c = Class.forName("net.jradius.session.RadiusSessionFactory");
-            factories.put(null, (SessionFactory) c.newInstance());
+            factories.put(null, (SessionFactory) c.getDeclaredConstructor().newInstance());
         }
         catch (Exception e)
         {
@@ -374,7 +375,7 @@ public class JRadiusSessionManager implements InitializingBean, ApplicationConte
 
         if (element != null)
         {
-        	session = (JRadiusSession) element.getValue();
+        	session = (JRadiusSession) element.getObjectValue();
         }
         
         if (session == null && request != null)
@@ -489,7 +490,7 @@ public class JRadiusSessionManager implements InitializingBean, ApplicationConte
 
     public void notifyElementExpired(Ehcache cache, Element element)
     {
-        Object value = element.getValue();
+        Object value = element.getObjectValue();
         if (value != null && value instanceof JRadiusSession)
         {
             JRadiusSession session = (JRadiusSession) value;

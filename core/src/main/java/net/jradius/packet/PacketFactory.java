@@ -48,68 +48,68 @@ public class PacketFactory
     
     static
     {
-        codeMap.put(new Integer(0),       				   NullPacket.class);           // 0
+        codeMap.put(Integer.valueOf(0),       				   NullPacket.class);           // 0
 
-        codeMap.put(new Integer(AccessRequest.CODE),       AccessRequest.class);        // 1
-        codeMap.put(new Integer(AccessAccept.CODE),        AccessAccept.class);         // 2
-        codeMap.put(new Integer(AccessReject.CODE),        AccessReject.class);         // 3
-        codeMap.put(new Integer(AccountingRequest.CODE),   AccountingRequest.class);    // 4
-        codeMap.put(new Integer(AccountingResponse.CODE),  AccountingResponse.class);   // 5
-        codeMap.put(new Integer(AccountingStatus.CODE),    AccountingStatus.class);     // 6
-        codeMap.put(new Integer(PasswordRequest.CODE),     PasswordRequest.class);      // 7
-        codeMap.put(new Integer(PasswordAck.CODE),         PasswordAck.class);          // 8
-        codeMap.put(new Integer(PasswordReject.CODE),      PasswordReject.class);       // 9
-        codeMap.put(new Integer(AccessChallenge.CODE),     AccessChallenge.class);      // 11
-        codeMap.put(new Integer(DisconnectRequest.CODE),   DisconnectRequest.class);    // 40
-        codeMap.put(new Integer(DisconnectACK.CODE),       DisconnectACK.class);        // 41
-        codeMap.put(new Integer(DisconnectNAK.CODE),       DisconnectNAK.class);        // 42
-        codeMap.put(new Integer(CoARequest.CODE),          CoARequest.class);           // 43
-        codeMap.put(new Integer(CoAACK.CODE),              CoAACK.class);               // 44
-        codeMap.put(new Integer(CoANAK.CODE),              CoANAK.class);               // 45
+        codeMap.put(Integer.valueOf(AccessRequest.CODE),       AccessRequest.class);        // 1
+        codeMap.put(Integer.valueOf(AccessAccept.CODE),        AccessAccept.class);         // 2
+        codeMap.put(Integer.valueOf(AccessReject.CODE),        AccessReject.class);         // 3
+        codeMap.put(Integer.valueOf(AccountingRequest.CODE),   AccountingRequest.class);    // 4
+        codeMap.put(Integer.valueOf(AccountingResponse.CODE),  AccountingResponse.class);   // 5
+        codeMap.put(Integer.valueOf(AccountingStatus.CODE),    AccountingStatus.class);     // 6
+        codeMap.put(Integer.valueOf(PasswordRequest.CODE),     PasswordRequest.class);      // 7
+        codeMap.put(Integer.valueOf(PasswordAck.CODE),         PasswordAck.class);          // 8
+        codeMap.put(Integer.valueOf(PasswordReject.CODE),      PasswordReject.class);       // 9
+        codeMap.put(Integer.valueOf(AccessChallenge.CODE),     AccessChallenge.class);      // 11
+        codeMap.put(Integer.valueOf(DisconnectRequest.CODE),   DisconnectRequest.class);    // 40
+        codeMap.put(Integer.valueOf(DisconnectACK.CODE),       DisconnectACK.class);        // 41
+        codeMap.put(Integer.valueOf(DisconnectNAK.CODE),       DisconnectNAK.class);        // 42
+        codeMap.put(Integer.valueOf(CoARequest.CODE),          CoARequest.class);           // 43
+        codeMap.put(Integer.valueOf(CoAACK.CODE),              CoAACK.class);               // 44
+        codeMap.put(Integer.valueOf(CoANAK.CODE),              CoANAK.class);               // 45
 
-        codeMap.put(new Integer(DHCPDiscover.CODE),        DHCPDiscover.class);         // 1025
-        codeMap.put(new Integer(DHCPOffer.CODE),           DHCPOffer.class);            // 1026
-        codeMap.put(new Integer(DHCPRequest.CODE),         DHCPRequest.class);          // 1027
-        codeMap.put(new Integer(DHCPDecline.CODE),         DHCPDecline.class);          // 1028
-        codeMap.put(new Integer(DHCPAck.CODE),             DHCPAck.class);              // 1029
-        codeMap.put(new Integer(DHCPNack.CODE),            DHCPNack.class);             // 1030
-        codeMap.put(new Integer(DHCPRelease.CODE),         DHCPRelease.class);          // 1031
-        codeMap.put(new Integer(DHCPInform.CODE),          DHCPInform.class);           // 1032
-        codeMap.put(new Integer(DHCPForceRenew.CODE),      DHCPForceRenew.class);       // 1033
+        codeMap.put(Integer.valueOf(DHCPDiscover.CODE),        DHCPDiscover.class);         // 1025
+        codeMap.put(Integer.valueOf(DHCPOffer.CODE),           DHCPOffer.class);            // 1026
+        codeMap.put(Integer.valueOf(DHCPRequest.CODE),         DHCPRequest.class);          // 1027
+        codeMap.put(Integer.valueOf(DHCPDecline.CODE),         DHCPDecline.class);          // 1028
+        codeMap.put(Integer.valueOf(DHCPAck.CODE),             DHCPAck.class);              // 1029
+        codeMap.put(Integer.valueOf(DHCPNack.CODE),            DHCPNack.class);             // 1030
+        codeMap.put(Integer.valueOf(DHCPRelease.CODE),         DHCPRelease.class);          // 1031
+        codeMap.put(Integer.valueOf(DHCPInform.CODE),          DHCPInform.class);           // 1032
+        codeMap.put(Integer.valueOf(DHCPForceRenew.CODE),      DHCPForceRenew.class);       // 1033
     }
 
-    public static class PacketFactoryPool extends GenericKeyedObjectPool
+    public static class PacketFactoryPool extends GenericKeyedObjectPool<Integer, RadiusPacket>
     {
     	public PacketFactoryPool()
     	{
-    		super(new KeyedPoolableObjectFactory() 
+    		super(new KeyedPoolableObjectFactory<Integer, RadiusPacket>() 
     	    {
-    			public boolean validateObject(Object arg0, Object arg1) 
+    			public boolean validateObject(Integer arg0, RadiusPacket arg1) 
     			{
     				return true;
     			}
     			
-    			public void passivateObject(Object arg0, Object arg1) throws Exception 
+    			public void passivateObject(Integer arg0, RadiusPacket arg1) throws Exception 
     			{
-    				RadiusPacket p = (RadiusPacket) arg1;
+    				RadiusPacket p = arg1;
     				p.recycled = true;
     			}
     			
-    			public Object makeObject(Object arg0) throws Exception 
+    			public RadiusPacket makeObject(Integer arg0) throws Exception 
     			{
-    				RadiusPacket p = createPacket((Integer) arg0);
+    				RadiusPacket p = createPacket(arg0);
     				p.recyclable = true;
     				p.recycled = false;
     				return p;
     			}
     			
-    			public void destroyObject(Object arg0, Object arg1) throws Exception 
+    			public void destroyObject(Integer arg0, RadiusPacket arg1) throws Exception 
     			{
     			}
     			
-    			public void activateObject(Object arg0, Object arg1) throws Exception 
+    			public void activateObject(Integer arg0, RadiusPacket arg1) throws Exception 
     			{
-    				RadiusPacket p = (RadiusPacket) arg1;
+    				RadiusPacket p = arg1;
     				p.setAuthenticator(null);
     				p.recycled = false;
     			}
@@ -120,16 +120,16 @@ public class PacketFactory
     	}
     }
     
-    private static KeyedObjectPool pktObjectPool = new PacketFactoryPool();
+    private static KeyedObjectPool<Integer, RadiusPacket> pktObjectPool = new PacketFactoryPool();
 
     private static RadiusPacket createPacket(Integer code) throws Exception
     {
-		Class<?> c = (Class<?>) codeMap.get(code);
+		Class<?> c = codeMap.get(code);
         if (c == null)
         {
             throw new RadiusException("bad radius code " + code);
         }
-        RadiusPacket p = (RadiusPacket) c.newInstance();
+        RadiusPacket p = (RadiusPacket) c.getDeclaredConstructor().newInstance();
         // System.err.println("Created packet " + p.toString());
         return p;
     }
@@ -140,7 +140,7 @@ public class PacketFactory
     	{
             if (pool && pktObjectPool != null)
             {
-            	RadiusPacket p = (RadiusPacket) pktObjectPool.borrowObject(code);
+            	RadiusPacket p = pktObjectPool.borrowObject(code);
             	// System.err.println("Borrowed packet " + p.toString());
             	return p;
             }
@@ -160,19 +160,19 @@ public class PacketFactory
 
     public static RadiusPacket newPacket(byte b)
     {
-    	return newPacket(new Integer(b));
+    	return newPacket(Integer.valueOf(b));
     }
 
     public static RadiusPacket newPacket(byte b, int identifier)
     {
-    	RadiusPacket p = newPacket(new Integer(b));
+    	RadiusPacket p = newPacket(Integer.valueOf(b));
     	p.setIdentifier(identifier);
     	return p;
     }
 
     public static RadiusPacket newPacket(byte b, int identifier, AttributeList list)
     {
-    	RadiusPacket p = newPacket(new Integer(b));
+    	RadiusPacket p = newPacket(Integer.valueOf(b));
     	p.setIdentifier(identifier);
     	p.getAttributes().add(list);
     	return p;
@@ -180,14 +180,14 @@ public class PacketFactory
 
     public static RadiusPacket newPacket(byte b, AttributeList list)
     {
-    	RadiusPacket p = newPacket(new Integer(b));
+    	RadiusPacket p = newPacket(Integer.valueOf(b));
     	p.getAttributes().add(list);
     	return p;
     }
 
     public static RadiusRequest newPacket(byte b, RadiusClient client, AttributeList list)
     {
-    	RadiusRequest p = (RadiusRequest) newPacket(new Integer(b));
+    	RadiusRequest p = (RadiusRequest) newPacket(Integer.valueOf(b));
     	p.setRadiusClient(client);
     	p.getAttributes().add(list);
     	return p;
@@ -237,7 +237,7 @@ public class PacketFactory
     public static RadiusPacket parseUDP(int code, int identifier, int length, ByteBuffer buffer, boolean pool) throws RadiusException, IOException
     {
     	RadiusPacket rp = null;
-        Integer key = new Integer(code);
+        Integer key = Integer.valueOf(code);
 
         if (pktObjectPool != null && pool)
         {
@@ -262,7 +262,7 @@ public class PacketFactory
 
 	        try
 	        {
-	            rp = (RadiusPacket)c.newInstance();
+	            rp = (RadiusPacket) c.getDeclaredConstructor().newInstance();
 	        }
 	        catch (Exception e)
 	        {
@@ -316,7 +316,7 @@ public class PacketFactory
 	        }
 	        try
 	        {
-	            rp = (RadiusPacket) c.newInstance();
+	            rp = (RadiusPacket) c.getDeclaredConstructor().newInstance();
 	        }
 	        catch (Exception e)
 	        {
@@ -348,7 +348,7 @@ public class PacketFactory
         int identifier = (int) Format.getUnsignedInt(buffer);
         long length = Format.getUnsignedInt(buffer);
 
-        Integer key = new Integer(code);
+        Integer key = Integer.valueOf(code);
         
         if (pktObjectPool != null)
         {
@@ -371,7 +371,7 @@ public class PacketFactory
 	        }
 	        try
 	        {
-	            rp = (RadiusPacket) c.newInstance();
+	            rp = (RadiusPacket) c.getDeclaredConstructor().newInstance();
 	        }
 	        catch (Exception e)
 	        {
@@ -392,7 +392,7 @@ public class PacketFactory
         return rp;
     }
     
-    /**
+    /*
      * Parse multiple RadiusPackets from a data stream
      * @param in The input data stream
      * @param packetCount Number of packets to expect
@@ -414,7 +414,7 @@ public class PacketFactory
         }
         return rp;
     }
-     */
+    */
 
 
 	public static RadiusPacket[] parse(ByteBuffer buffer, int packetCount)
@@ -457,7 +457,7 @@ public class PacketFactory
 			{
 				try
 				{
-					pktObjectPool.returnObject(new Integer(p.getCode()), p);
+					pktObjectPool.returnObject(Integer.valueOf(p.getCode()), p);
 					// System.err.print("Recycled packet "+p.toString());
 				}
 				catch (Exception e)

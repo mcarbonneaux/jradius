@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.bouncycastle.asn1.x509.X509CertificateStructure;
+import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.crypto.BlockCipher;
 import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.digests.SHA1Digest;
-import org.bouncycastle.crypto.engines.AESFastEngine;
+import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.engines.DESedeEngine;
 import org.bouncycastle.crypto.modes.CBCBlockCipher;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
@@ -68,7 +68,7 @@ public class DefaultTlsClient implements TlsClient
     private TlsProtocolHandler handler;
 
     // (Optional) details for client-side authentication
-    private Certificate clientCert = new Certificate(new X509CertificateStructure[0]);
+    private JRadiusCertificate clientCert = new JRadiusCertificate(new Certificate[0]);
     private AsymmetricKeyParameter clientPrivateKey = null;
     private TlsSigner clientSigner = null;
 
@@ -79,7 +79,7 @@ public class DefaultTlsClient implements TlsClient
         this.verifyer = verifyer;
     }
 
-    public void enableClientAuthentication(Certificate clientCertificate,
+    public void enableClientAuthentication(JRadiusCertificate clientCertificate,
         AsymmetricKeyParameter clientPrivateKey)
     {
         if (clientCertificate == null)
@@ -240,7 +240,7 @@ public class DefaultTlsClient implements TlsClient
         }
     }
 
-    public void processServerCertificateRequest(byte[] certificateTypes, List certificateAuthorities)
+    public void processServerCertificateRequest(byte[] certificateTypes, List<?> certificateAuthorities)
     {
         // TODO There shouldn't be a certificate request for SRP 
 
@@ -265,7 +265,7 @@ public class DefaultTlsClient implements TlsClient
         }
     }
 
-    public Certificate getCertificate()
+    public JRadiusCertificate getCertificate()
     {
         return clientCert;
     }
@@ -346,7 +346,7 @@ public class DefaultTlsClient implements TlsClient
 
     private static BlockCipher createAESBlockCipher()
     {
-        return new CBCBlockCipher(new AESFastEngine());
+        return new CBCBlockCipher(new AESEngine());
     }
 
     private static BlockCipher createDESedeBlockCipher()

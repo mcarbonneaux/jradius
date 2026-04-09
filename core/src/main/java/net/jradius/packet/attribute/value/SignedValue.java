@@ -74,7 +74,7 @@ public class SignedValue extends IntegerValue {
     public void setValue(long l) throws NumberFormatException
     {
         if (isValid(l) == false) throw new NumberFormatException("[bad signed integer value: " + String.valueOf(l) + "]");
-        integerValue = new Long(l);
+        integerValue = Long.valueOf(l);
     }
 
     public static boolean isValid(long l) {

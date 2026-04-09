@@ -48,7 +48,7 @@ public class AttributesTableModel extends AbstractTableModel {
             "Attribute Value" 
     };
     
-    private ArrayList entries = new ArrayList();
+    private ArrayList<AttributesTableEntry> entries = new ArrayList<>();
     
     /* (non-Javadoc)
      * @see javax.swing.table.AbstractTableModel#getColumnName(int)
@@ -92,7 +92,7 @@ public class AttributesTableModel extends AbstractTableModel {
     /* (non-Javadoc)
      * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
      */
-    public Class getColumnClass(int col) {
+    public Class<?> getColumnClass(int col) {
         if (col == 0 || col == 7) return String.class;
         return Boolean.class;
     }
@@ -146,7 +146,7 @@ public class AttributesTableModel extends AbstractTableModel {
     /**
      * @return Returns the entries.
      */
-    public ArrayList getEntries()
+    public ArrayList<AttributesTableEntry> getEntries()
     {
         return entries;
     }
@@ -154,7 +154,7 @@ public class AttributesTableModel extends AbstractTableModel {
     /**
      * @param entries The entries to set.
      */
-    public void setEntries(ArrayList entries)
+    public void setEntries(ArrayList<AttributesTableEntry> entries)
     {
         if (entries != null) this.entries = entries;
     }

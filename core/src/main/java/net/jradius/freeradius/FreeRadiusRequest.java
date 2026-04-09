@@ -27,6 +27,7 @@ import net.jradius.packet.RadiusPacket;
 import net.jradius.packet.attribute.AttributeList;
 import net.jradius.server.JRadiusRequest;
 import net.jradius.server.JRadiusServer;
+import net.jradius.server.ListenerRequest;
 
 import org.apache.commons.pool.ObjectPool;
 
@@ -47,8 +48,6 @@ public class FreeRadiusRequest extends JRadiusRequest
     
     protected int returnValue = JRadiusServer.RLM_MODULE_UPDATED;
     
-    protected ObjectPool borrowedFromPool;
-
     protected final ByteBuffer buffer_in;
     protected final ByteBuffer buffer_out;
 
@@ -148,11 +147,12 @@ public class FreeRadiusRequest extends JRadiusRequest
         }
     }
 
-	public ObjectPool getBorrowedFromPool() {
-		return borrowedFromPool;
+	private ObjectPool<FreeRadiusRequest> borrowedFromPool;
+
+	public ObjectPool<FreeRadiusRequest> getBorrowedFromPool() {
+		return null;
 	}
 
-	public void setBorrowedFromPool(ObjectPool borrowedFromPool) {
-		this.borrowedFromPool = borrowedFromPool;
+	public void setBorrowedFromPool(ObjectPool<FreeRadiusRequest> borrowedFromPool) {
 	}
 }

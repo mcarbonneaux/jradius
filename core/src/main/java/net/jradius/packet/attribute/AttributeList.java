@@ -87,7 +87,7 @@ public class AttributeList implements Serializable
     @SuppressWarnings("unchecked")
 	public void _add(RadiusAttribute a, boolean overwrite)
     {
-        Long key = new Long(a.getFormattedType());
+        Long key = Long.valueOf(a.getFormattedType());
         
         Object o = attributeMap.get(key);
         attributeOrderList.add(a);
@@ -130,7 +130,7 @@ public class AttributeList implements Serializable
     		
     		try 
     		{
-    			RadiusAttribute _pAttribute = (RadiusAttribute) subAttribute.getParentClass().newInstance();
+    			RadiusAttribute _pAttribute = (RadiusAttribute) subAttribute.getParentClass().getDeclaredConstructor().newInstance();
     			RadiusAttribute pAttribute = (RadiusAttribute) get(_pAttribute.getFormattedType(), true);
 
     			if (pAttribute == null)
@@ -168,7 +168,7 @@ public class AttributeList implements Serializable
      */
     public void remove(long attributeType)
     {
-        Long key = new Long(attributeType);
+        Long key = Long.valueOf(attributeType);
         Object o = attributeMap.remove(key);
         if (o != null)
         {
@@ -244,7 +244,7 @@ public class AttributeList implements Serializable
     @SuppressWarnings("unchecked")
 	public Object get(long type, boolean single) 
     {
-        Long key = new Long(type);
+        Long key = Long.valueOf(type);
         Object o = attributeMap.get(key);
         if (o == null || !(o instanceof LinkedList))
         {
@@ -287,7 +287,7 @@ public class AttributeList implements Serializable
      */
     public Object[] getArray(long type)
     {
-        Long key = new Long(type);
+        Long key = Long.valueOf(type);
         return toArray(attributeMap.get(key));
     }
     

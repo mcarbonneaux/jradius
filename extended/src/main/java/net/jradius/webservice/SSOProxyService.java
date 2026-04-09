@@ -80,7 +80,7 @@ public class SSOProxyService extends EventHandlerBase
         JRadiusSession radiusSession = (JRadiusSession)JRadiusSessionManager.getManager(request.getSender()).getSession(null, session);
 
         WebServiceResponse response = new WebServiceResponse();
-        Map headers = response.getHeaders();
+        Map<String, String> headers = response.getHeaders();
 
         String url = radiusSession.getRedirectURL();
         if (url == null) url = defaultURL;

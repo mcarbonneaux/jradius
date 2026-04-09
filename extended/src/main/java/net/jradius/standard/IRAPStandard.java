@@ -137,7 +137,7 @@ public class IRAPStandard extends RadiusStandard
      */
     public void checkPacket(RadiusPacket p, long[] ignore) throws StandardViolatedException
     {
-        LinkedList missing = new LinkedList();
+        LinkedList<Long> missing = new LinkedList<>();
         boolean testAs8021X = false;
         
         if (isIEEE8021XRequired()) testAs8021X = true;

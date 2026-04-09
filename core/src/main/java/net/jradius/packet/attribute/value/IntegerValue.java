@@ -137,7 +137,7 @@ public class IntegerValue extends AttributeValue
                 case 1: // it's really a byte
                 {
                     length = 1;
-                    integerValue = new Long((int)b[off]&0xFF);
+                    integerValue = Long.valueOf((int)b[off]&0xFF);
                 }
                 break;
                 
@@ -148,7 +148,7 @@ public class IntegerValue extends AttributeValue
                         (long)((int)b[off] & 0xFF) <<  8 | 
                         (long)((int)b[off + 1] & 0xFF);
         
-                    integerValue = new Long(longValue);
+                    integerValue = Long.valueOf(longValue);
                 }
                 break;
 
@@ -160,7 +160,7 @@ public class IntegerValue extends AttributeValue
                         (long)((int)b[off + 2] & 0xFF) <<  8 | 
                         (long)((int)b[off + 3] & 0xFF);
         
-                    integerValue = new Long(longValue);
+                    integerValue = Long.valueOf(longValue);
                 }
                 break;
             }
@@ -220,18 +220,18 @@ public class IntegerValue extends AttributeValue
 		}
 		else if (o instanceof Number)
 		{
-			setLong(new Long(((Number)o).longValue()));
+			setLong(Long.valueOf(((Number)o).longValue()));
 		}
 		else
 		{
-			setLong(new Long(Long.parseLong(o.toString())));
+			setLong(Long.valueOf(Long.parseLong(o.toString())));
 		}
     }
     
     public void setValue(long l) throws NumberFormatException
     {
         if (isValid(l) == false) throw new NumberFormatException("[bad unsigned integer value: " + String.valueOf(l) + "]");
-        integerValue = new Long(l);
+        integerValue = Long.valueOf(l);
     }
 
     public static boolean isValid(long l)

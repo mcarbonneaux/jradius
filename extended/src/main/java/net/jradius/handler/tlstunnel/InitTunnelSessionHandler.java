@@ -45,7 +45,7 @@ import net.sf.ehcache.Element;
 public class InitTunnelSessionHandler extends RadiusSessionHandler
 {
     private Cache tlsTunnels;
-    private HashMap realms = new HashMap();
+    private HashMap<String, String> realms = new HashMap<>();
     
     /**
      * This handler is to be chained before the actual InitSessionHandler. 
@@ -84,7 +84,7 @@ public class InitTunnelSessionHandler extends RadiusSessionHandler
 	        RadiusSessionKeyProvider skp = (RadiusSessionKeyProvider)JRadiusSessionManager.getManager(request.getSender()).getSessionKeyProvider(request.getSender());
 	        Element element = tlsTunnels.get(skp.getTunneledRequestKey(request));
             if (element == null) return false;
-            String sessionKey = (String)element.getValue();
+            String sessionKey = (String)element.getObjectValue();
 	        if (sessionKey == null) 
 	        {
 	            request.setReturnValue(JRadiusServer.RLM_MODULE_REJECT);

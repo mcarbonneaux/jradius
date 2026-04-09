@@ -87,7 +87,7 @@ public class NamedValue extends IntegerValue
     
     public void setValue(Number l)
     {
-        this.integerValue = new Long(l.longValue());
+        this.integerValue = Long.valueOf(l.longValue());
     }
     
 	public void setValueObject(Serializable o) 

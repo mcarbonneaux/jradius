@@ -53,7 +53,7 @@ public class DateValue extends IntegerValue
     
     public void getBytes(OutputStream out) throws IOException
     {
-        integerValue = new Long(dateValue.getTime() / 1000);
+        integerValue = Long.valueOf(dateValue.getTime() / 1000);
         super.getBytes(out);
     }
     
@@ -95,7 +95,7 @@ public class DateValue extends IntegerValue
 
 	public void getBytes(ByteBuffer buffer)
     {
-	    integerValue = new Long(dateValue.getTime() / 1000);
+	    integerValue = Long.valueOf(dateValue.getTime() / 1000);
 	    super.getBytes(buffer);
     }
  
@@ -123,7 +123,7 @@ public class DateValue extends IntegerValue
     public void setDate(Date newDate)
     {
         this.dateValue = newDate;
-        this.integerValue = new Long(this.dateValue.getTime() / 1000);
+        this.integerValue = Long.valueOf(this.dateValue.getTime() / 1000);
     }
     
     public Serializable getValueObject()

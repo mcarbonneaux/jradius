@@ -141,7 +141,7 @@ public class JRadiusSimulator extends JFrame
     private SimulationRunner[] simulationRunners = null;
     private Thread simulationMonitor = null;
     boolean interactiveSession = false;
-    private final HashMap namedValueComponentCache = new HashMap();
+    private final HashMap<String, JComboBox<String>> namedValueComponentCache = new HashMap<>();
     private NumberFormatter numberFormatter;
     private PrintStream logSent;
     private PrintStream logRecv;
@@ -191,8 +191,8 @@ public class JRadiusSimulator extends JFrame
     private JPanel addAttributeContentPane = null;
     private JTree attributeTree = null;
     private JPanel addAttributePanel = null;
-    private JComboBox authTypeComboBox = null;
-    private JComboBox checkStandardComboBox = null;
+    private JComboBox<String> authTypeComboBox = null;
+    private JComboBox<String> checkStandardComboBox = null;
     private JPanel attributesPanel = null;
     private JPanel keysPanel = null;
     private JPanel keysOptionsPanel = null;
@@ -203,8 +203,8 @@ public class JRadiusSimulator extends JFrame
     private JTextField tlsCAPasswordTextField = null;
     private JFormattedTextField requestersTextField = null;
     private JFormattedTextField requestsTextField = null;
-    private JComboBox tlsKeyFileTypeComboBox = null;
-    private JComboBox tlsCAFileTypeComboBox = null;
+    private JComboBox<String> tlsKeyFileTypeComboBox = null;
+    private JComboBox<String> tlsCAFileTypeComboBox = null;
     private JCheckBox tlsTrustAll = null;
     private JCheckBox tlsUseJavaRootCA = null;    
     private JLabel radiusServerLabel = null;
@@ -213,7 +213,7 @@ public class JRadiusSimulator extends JFrame
     private JScrollPane attributeTreeScrollPane = null;
     private JPanel attributeTreeScrollPanel = null;
     private JButton addButton = null;
-    private JComboBox simulationTypeComboBox = null;
+    private JComboBox<String> simulationTypeComboBox = null;
     private JPanel attributesButtonPanel = null;
     private JButton removeAttributeButton = null;
     private JButton moveUpButton = null;
@@ -236,7 +236,7 @@ public class JRadiusSimulator extends JFrame
     private JLabel openUrlStatusLabel = null;
     private JButton cancelUrlButton = null;
     private JLabel statusLabel = null;
-    private JComboBox transportTypeComboBox = null;
+    private JComboBox<String> transportTypeComboBox = null;
     private boolean isJava14 = false;
     
     /**
@@ -305,7 +305,9 @@ public class JRadiusSimulator extends JFrame
         String s = this.properties.getProperty("AttributesTableEntries");
         if (s != null)
         {
-            attributesTableModel.setEntries((ArrayList)Base64.decodeToObject(s));
+            @SuppressWarnings("unchecked")
+            ArrayList<AttributesTableEntry> entries = (ArrayList<AttributesTableEntry>) Base64.decodeToObject(s);
+            attributesTableModel.setEntries(entries);
             attributesTableModel.fireTableDataChanged();
         }
         
@@ -316,22 +318,22 @@ public class JRadiusSimulator extends JFrame
         if (s != null) sharedSecretTextField.setText(s);
 
         s = this.properties.getProperty("AuthPort");
-        if (s != null) radiusAuthPortTextField.setValue(new Integer(s));
+        if (s != null) radiusAuthPortTextField.setValue(Integer.valueOf(s));
 
         s = this.properties.getProperty("AcctPort");
-        if (s != null) radiusAcctPortTextField.setValue(new Integer(s));
+        if (s != null) radiusAcctPortTextField.setValue(Integer.valueOf(s));
 
         s = this.properties.getProperty("Retries");
-        if (s != null) radiusRetriesTextField.setValue(new Integer(s));
+        if (s != null) radiusRetriesTextField.setValue(Integer.valueOf(s));
 
         s = this.properties.getProperty("Timeout");
-        if (s != null) radiusTimeoutTextField.setValue(new Integer(s));
+        if (s != null) radiusTimeoutTextField.setValue(Integer.valueOf(s));
 
         s = this.properties.getProperty("Requesters");
-        if (s != null) requestersTextField.setValue(new Integer(s));
+        if (s != null) requestersTextField.setValue(Integer.valueOf(s));
 
         s = this.properties.getProperty("Requests");
-        if (s != null) requestsTextField.setValue(new Integer(s));
+        if (s != null) requestsTextField.setValue(Integer.valueOf(s));
 
         s = this.properties.getProperty("SimulationType");
         if (s != null) try { simulationTypeComboBox.setSelectedIndex(Integer.parseInt(s)); } catch (Exception e) { }
@@ -343,16 +345,16 @@ public class JRadiusSimulator extends JFrame
         if (s != null) try { checkStandardComboBox.setSelectedIndex(Integer.parseInt(s)); } catch (Exception e) { }
 
         s = this.properties.getProperty("GenerateAcctSessionId");
-        if (s != null) try { generateAcctSessionIdCheckBox.setSelected(new Boolean(s).booleanValue()); } catch (Exception e) { }
+        if (s != null) try { generateAcctSessionIdCheckBox.setSelected(Boolean.valueOf(s).booleanValue()); } catch (Exception e) { }
 
         s = this.properties.getProperty("DoLog");
-        if (s != null) try { doLogCheckBox.setSelected(new Boolean(s).booleanValue()); } catch (Exception e) { }
+        if (s != null) try { doLogCheckBox.setSelected(Boolean.valueOf(s).booleanValue()); } catch (Exception e) { }
 
         s = this.properties.getProperty("StopOnReject");
-        if (s != null) try { notStopOnRejectCheckBox.setSelected(new Boolean(s).booleanValue()); } catch (Exception e) { }
+        if (s != null) try { notStopOnRejectCheckBox.setSelected(Boolean.valueOf(s).booleanValue()); } catch (Exception e) { }
 
         s = this.properties.getProperty("SendClassAttr");
-        if (s != null) try { notSendClassAttribute.setSelected(new Boolean(s).booleanValue()); } catch (Exception e) { }
+        if (s != null) try { notSendClassAttribute.setSelected(Boolean.valueOf(s).booleanValue()); } catch (Exception e) { }
 
         s = this.properties.getProperty("TLSKeyFile");
         if (s != null) tlsKeyFileTextField.setText(s);
@@ -373,7 +375,7 @@ public class JRadiusSimulator extends JFrame
         if (s != null) try { tlsCAFileTypeComboBox.setSelectedIndex(Integer.parseInt(s)); } catch (Exception e) { }
 
         s = this.properties.getProperty("TLSTrustAll");
-        if (s != null) try { tlsTrustAll.setSelected(new Boolean(s).booleanValue()); } catch (Exception e) { }
+        if (s != null) try { tlsTrustAll.setSelected(Boolean.valueOf(s).booleanValue()); } catch (Exception e) { }
 
         //s = this.properties.getProperty("TLSUseJavaCA");
         //if (s != null) try { tlsUseJavaRootCA.setSelected(new Boolean(s).booleanValue()); } catch (Exception e) { }
@@ -517,7 +519,7 @@ public class JRadiusSimulator extends JFrame
         if (saveMenuItem == null) {
             saveMenuItem = new JMenuItem();
             saveMenuItem.setText("Save");
-            saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK, true));
+            saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK, true));
             saveMenuItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     if (configFileUrl.startsWith("file:///"))
@@ -567,7 +569,7 @@ public class JRadiusSimulator extends JFrame
         if (openMenuItem == null) {
             openMenuItem = new JMenuItem();
             openMenuItem.setText("Open");
-            openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, Event.CTRL_MASK, true));
+            openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK, true));
             openMenuItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser chooser = new JFileChooser();
@@ -895,13 +897,13 @@ public class JRadiusSimulator extends JFrame
             if (entry.getValueClass().equals(NamedValue.class))
             {
                 component = createNamedValueCellEditor(entry.getAttributeName());
-                ((JComboBox)component).setSelectedItem(value);
+                ((JComboBox<?>)component).setSelectedItem(value);
             }
             else if (entry.getValueClass().equals(IntegerValue.class))
             {
                 JFormattedTextField ftf = new JFormattedTextField(getNumberFormatter());
                 Integer iValue = null;
-                try { iValue = new Integer((String)value); } catch (Exception e) { iValue = new Integer(0); }
+                try { iValue = Integer.valueOf((String)value); } catch (Exception e) { iValue = Integer.valueOf(0); }
                 ftf.setValue(iValue);
                 component = ftf;
             }
@@ -917,7 +919,7 @@ public class JRadiusSimulator extends JFrame
     
         public Object getCellEditorValue() 
         {
-            if (component instanceof JComboBox) return ((JComboBox)component).getSelectedItem();
+            if (component instanceof JComboBox) return ((JComboBox<?>)component).getSelectedItem();
             if (component instanceof JFormattedTextField) return ((Integer)((JFormattedTextField)component).getValue()).toString();
             return ((JTextField)component).getText();
         }
@@ -965,9 +967,9 @@ public class JRadiusSimulator extends JFrame
         return attributesTable;
     }
     
-    private JComboBox createNamedValueCellEditor(String attributeName)
+    private JComboBox<String> createNamedValueCellEditor(String attributeName)
     {
-        JComboBox comboBox = (JComboBox)namedValueComponentCache.get(attributeName);
+        JComboBox<String> comboBox = namedValueComponentCache.get(attributeName);
         if (comboBox != null) return comboBox;
         try
         {
@@ -975,7 +977,7 @@ public class JRadiusSimulator extends JFrame
             NamedValue namedValue = (NamedValue)attribute.getValue();
             NamedValueMap valueMap = namedValue.getMap();
             Long[] possibleValues = valueMap.getKnownValues();
-            comboBox = new JComboBox();
+            comboBox = new JComboBox<>();
             for (int i=0; i<possibleValues.length;i++)
             {
                 comboBox.addItem(valueMap.getNamedValue(possibleValues[i]));
@@ -1317,7 +1319,7 @@ public class JRadiusSimulator extends JFrame
             VendorValue vendor = i.next();
             try
             {
-                VSADictionary dict = (VSADictionary)vendor.getDictClass().newInstance();
+                VSADictionary dict = (VSADictionary)vendor.getDictClass().getDeclaredConstructor().newInstance();
                 String vendorName = dict.getVendorName();
                 Map<String, Class<?>> map = vendor.getAttributeNameMap();
                 System.out.println("Loading vendor " + vendorName + " with " + map.size() + " attributes.");
@@ -1347,7 +1349,7 @@ public class JRadiusSimulator extends JFrame
             Class<?> clazz = entry.getValue();
             try
             {
-                RadiusAttribute attribute = (RadiusAttribute)clazz.newInstance();
+                RadiusAttribute attribute = (RadiusAttribute)clazz.getDeclaredConstructor().newInstance();
                 if (!skipVSA || (!(attribute instanceof VSAttribute) && attribute.getType() <= 255))
                 {
                     String attributeName = attribute.getAttributeName();
@@ -1385,9 +1387,9 @@ public class JRadiusSimulator extends JFrame
      * 
      * @return javax.swing.JComboBox
      */
-    private JComboBox getAuthTypeComboBox() {
+    private JComboBox<String> getAuthTypeComboBox() {
         if (authTypeComboBox == null) {
-            authTypeComboBox = new JComboBox(authTypeNames);
+            authTypeComboBox = new JComboBox<>(authTypeNames);
         }
         return authTypeComboBox;
     }
@@ -1463,9 +1465,9 @@ public class JRadiusSimulator extends JFrame
      * 
      * @return javax.swing.JComboBox
      */
-    private JComboBox getCheckStandardComboBox() {
+    private JComboBox<String> getCheckStandardComboBox() {
         if (checkStandardComboBox == null) {
-            checkStandardComboBox = new JComboBox(new String[] { "None", "IRAP", "WISPr" });
+            checkStandardComboBox = new JComboBox<>(new String[] { "None", "IRAP", "WISPr" });
         }
         return checkStandardComboBox;
     }
@@ -1475,9 +1477,9 @@ public class JRadiusSimulator extends JFrame
      * 
      * @return javax.swing.JComboBox
      */
-    private JComboBox getTLSCAFileTypeComboBox() {
+    private JComboBox<String> getTLSCAFileTypeComboBox() {
         if (tlsCAFileTypeComboBox == null) {
-            tlsCAFileTypeComboBox = new JComboBox(keystoreTypes);
+            tlsCAFileTypeComboBox = new JComboBox<>(keystoreTypes);
         }
         return tlsCAFileTypeComboBox;
     }
@@ -1487,16 +1489,16 @@ public class JRadiusSimulator extends JFrame
      * 
      * @return javax.swing.JComboBox
      */
-    private JComboBox getTLSKeyFileTypeComboBox() {
+    private JComboBox<String> getTLSKeyFileTypeComboBox() {
         if (tlsKeyFileTypeComboBox == null) {
-            tlsKeyFileTypeComboBox = new JComboBox(keystoreTypes);
+            tlsKeyFileTypeComboBox = new JComboBox<>(keystoreTypes);
         }
         return tlsKeyFileTypeComboBox;
     }
 
-    private JComboBox getTransportTypeComboBox() {
+    private JComboBox<String> getTransportTypeComboBox() {
         if (transportTypeComboBox == null) {
-        	transportTypeComboBox = new JComboBox(transportTypes);
+            transportTypeComboBox = new JComboBox<>(transportTypes);
         }
         return transportTypeComboBox;
     }
@@ -1754,9 +1756,9 @@ public class JRadiusSimulator extends JFrame
      * 	
      * @return javax.swing.JComboBox	
      */    
-    private JComboBox getSimulationTypeComboBox() {
+    private JComboBox<String> getSimulationTypeComboBox() {
     	if (simulationTypeComboBox == null) {
-    		simulationTypeComboBox = new JComboBox(new String[] { 
+    		simulationTypeComboBox = new JComboBox<>(new String[] { 
     		        "Auth Only", 
                     "Auth & Acct (Start, Interim, Stop)", 
                     "Auth & Acct (Start, Stop)",
@@ -1824,10 +1826,10 @@ public class JRadiusSimulator extends JFrame
     			public void actionPerformed(java.awt.event.ActionEvent e) {    
                     int selectedIndex = attributesTable.getSelectedRow();
                     if (selectedIndex <= 0) return;
-                    ArrayList list = attributesTableModel.getEntries();
-                    ArrayList newList = new ArrayList();
-                    Object[] oList = list.toArray();
-                    Object selectedObject = null;
+                    ArrayList<AttributesTableEntry> list = attributesTableModel.getEntries();
+                    ArrayList<AttributesTableEntry> newList = new ArrayList<>();
+                    AttributesTableEntry[] oList = list.toArray(new AttributesTableEntry[0]);
+                    AttributesTableEntry selectedObject = null;
                     for (int i = 0; i < oList.length; i++)
                     {
                         if (i == selectedIndex) { newList.add(oList[i]); newList.add(selectedObject); }
@@ -1856,11 +1858,11 @@ public class JRadiusSimulator extends JFrame
     			public void actionPerformed(java.awt.event.ActionEvent e) {    
                  int selectedIndex = attributesTable.getSelectedRow();
                  if (selectedIndex == -1) return;
-                 ArrayList list = attributesTableModel.getEntries();
+                 ArrayList<AttributesTableEntry> list = attributesTableModel.getEntries();
                  if (selectedIndex >= (list.size() - 1)) return;
-                 ArrayList newList = new ArrayList();
-                 Object[] oList = list.toArray();
-                 Object selectedObject = null;
+                 ArrayList<AttributesTableEntry> newList = new ArrayList<>();
+                 AttributesTableEntry[] oList = list.toArray(new AttributesTableEntry[0]);
+                 AttributesTableEntry selectedObject = null;
                  for (int i = 0; i < oList.length; i++)
                  {
                      if (i == selectedIndex) { selectedObject = oList[i]; }
@@ -1978,7 +1980,7 @@ public class JRadiusSimulator extends JFrame
     private JFormattedTextField getRadiusAuthPortTextField() {
         if (radiusAuthPortTextField == null) {
             radiusAuthPortTextField = new JFormattedTextField(getNumberFormatter());
-            radiusAuthPortTextField.setValue(new Integer(1812));
+            radiusAuthPortTextField.setValue(Integer.valueOf(1812));
         }
         return radiusAuthPortTextField;
     }
@@ -1991,7 +1993,7 @@ public class JRadiusSimulator extends JFrame
     private JFormattedTextField getRadiusAcctPortTextField() {
         if (radiusAcctPortTextField == null) {
             radiusAcctPortTextField = new JFormattedTextField(getNumberFormatter());
-            radiusAcctPortTextField.setValue(new Integer(1813));
+            radiusAcctPortTextField.setValue(Integer.valueOf(1813));
         }
         return radiusAcctPortTextField;
     }
@@ -2004,7 +2006,7 @@ public class JRadiusSimulator extends JFrame
     private JFormattedTextField getRadiusRetriesTextField() {
         if (radiusRetriesTextField == null) {
             radiusRetriesTextField = new JFormattedTextField(getNumberFormatter());
-            radiusRetriesTextField.setValue(new Integer(0));
+            radiusRetriesTextField.setValue(Integer.valueOf(0));
         }
         return radiusRetriesTextField;
     }
@@ -2017,7 +2019,7 @@ public class JRadiusSimulator extends JFrame
     private JFormattedTextField getRequestersTextField() {
         if (requestersTextField == null) {
             requestersTextField = new JFormattedTextField(getNumberFormatter());
-            requestersTextField.setValue(new Integer(1));
+            requestersTextField.setValue(Integer.valueOf(1));
         }
         return requestersTextField;
     }
@@ -2030,7 +2032,7 @@ public class JRadiusSimulator extends JFrame
     private JFormattedTextField getRequestsTextField() {
         if (requestsTextField == null) {
             requestsTextField = new JFormattedTextField(getNumberFormatter());
-            requestsTextField.setValue(new Integer(1));
+            requestsTextField.setValue(Integer.valueOf(1));
         }
         return requestsTextField;
     }
@@ -2043,7 +2045,7 @@ public class JRadiusSimulator extends JFrame
     private JFormattedTextField getRadiusTimeoutTextField() {
         if (radiusTimeoutTextField == null) {
             radiusTimeoutTextField = new JFormattedTextField(getNumberFormatter());
-            radiusTimeoutTextField.setValue(new Integer(10));
+            radiusTimeoutTextField.setValue(Integer.valueOf(10));
         }
         return radiusTimeoutTextField;
     }
@@ -2056,7 +2058,7 @@ public class JRadiusSimulator extends JFrame
     private JFormattedTextField getRadiusInterimIntervalTextField() {
         if (radiusInterimIntervalTextField == null) {
             radiusInterimIntervalTextField = new JFormattedTextField(getNumberFormatter());
-            radiusInterimIntervalTextField.setValue(new Integer(60));
+            radiusInterimIntervalTextField.setValue(Integer.valueOf(60));
         }
         return radiusInterimIntervalTextField;
     }
@@ -2069,7 +2071,7 @@ public class JRadiusSimulator extends JFrame
     private JFormattedTextField getSessionTimeTextField() {
         if (sessionTimeTextField == null) {
             sessionTimeTextField = new JFormattedTextField(getNumberFormatter());
-            sessionTimeTextField.setValue(new Integer(60));
+            sessionTimeTextField.setValue(Integer.valueOf(60));
         }
         return sessionTimeTextField;
     }

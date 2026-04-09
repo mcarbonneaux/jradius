@@ -8,30 +8,30 @@ import java.util.Vector;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.x509.X509CertificateStructure;
+import org.bouncycastle.asn1.x509.Certificate;
 
 /**
  * A representation for a certificate chain as used by a tls server.
  */
-public class Certificate
+public class JRadiusCertificate
 {
     /**
      * The certificates.
      */
-    protected X509CertificateStructure[] certs;
+    protected Certificate[] certs;
 
     /**
      * Parse the ServerCertificate message.
      * 
      * @param is The stream where to parse from.
-     * @return A Certificate object with the certs, the server has sended.
+     * @return A JRadiusCertificate object with the certs, the server has sended.
      * @throws IOException If something goes wrong during parsing.
      */
-    public static Certificate parse(InputStream is) throws IOException
+    public static JRadiusCertificate parse(InputStream is) throws IOException
     {
-        X509CertificateStructure[] certs;
+        Certificate[] certs;
         int left = TlsUtils.readUint24(is);
-        Vector tmp = new Vector();
+        Vector<Certificate> tmp = new Vector<>();
         while (left > 0)
         {
             int size = TlsUtils.readUint24(is);
@@ -41,19 +41,19 @@ public class Certificate
             ByteArrayInputStream bis = new ByteArrayInputStream(buf);
             ASN1InputStream ais = new ASN1InputStream(bis);
             ASN1Primitive o = ais.readObject();
-            tmp.addElement(X509CertificateStructure.getInstance(o));
+            tmp.add(Certificate.getInstance(o));
             if (bis.available() > 0)
             {
                 throw new IllegalArgumentException(
                     "Sorry, there is garbage data left after the certificate");
             }
         }
-        certs = new X509CertificateStructure[tmp.size()];
+        certs = new Certificate[tmp.size()];
         for (int i = 0; i < tmp.size(); i++)
         {
-            certs[i] = (X509CertificateStructure)tmp.elementAt(i);
+            certs[i] = (Certificate)tmp.elementAt(i);
         }
-        return new Certificate(certs);
+        return new JRadiusCertificate(certs);
     }
 
     /**
@@ -64,12 +64,12 @@ public class Certificate
      */
     protected void encode(OutputStream os) throws IOException
     {
-        Vector encCerts = new Vector();
+        Vector<byte[]> encCerts = new Vector<>();
         int totalSize = 0;
         for (int i = 0; i < this.certs.length; ++i)
         {
             byte[] encCert = certs[i].getEncoded();
-            encCerts.addElement(encCert);
+            encCerts.add(encCert);
             totalSize += encCert.length + 3;
         }
 
@@ -88,7 +88,7 @@ public class Certificate
      * 
      * @param certs The certs the chain should contain.
      */
-    public Certificate(X509CertificateStructure[] certs)
+    public JRadiusCertificate(Certificate[] certs)
     {
         this.certs = certs;
     }
@@ -96,9 +96,9 @@ public class Certificate
     /**
      * @return An array which contains the certs, this chain contains.
      */
-    public X509CertificateStructure[] getCerts()
+    public Certificate[] getCerts()
     {
-        X509CertificateStructure[] result = new X509CertificateStructure[certs.length];
+        Certificate[] result = new Certificate[certs.length];
         System.arraycopy(certs, 0, result, 0, certs.length);
         return result;
     }

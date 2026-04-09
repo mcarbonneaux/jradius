@@ -22,12 +22,12 @@ interface TlsClient
 
     TlsKeyExchange createKeyExchange() throws IOException;
 
-    // List is (X509Name)
-    void processServerCertificateRequest(byte[] certificateTypes, List certificateAuthorities);
+    // List is (X500Name)
+    void processServerCertificateRequest(byte[] certificateTypes, List<?> certificateAuthorities);
 
     byte[] generateCertificateSignature(byte[] md5andsha1) throws IOException;
 
-    Certificate getCertificate();
+    JRadiusCertificate getCertificate();
 
     TlsCipher createCipher(SecurityParameters securityParameters) throws IOException;
 }

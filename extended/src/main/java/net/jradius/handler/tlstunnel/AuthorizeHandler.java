@@ -47,7 +47,7 @@ import org.apache.commons.chain.Catalog;
  */
 public class AuthorizeHandler extends RadiusSessionHandler
 {
-    private HashMap terminatedRealms = new HashMap();
+    private HashMap<String, String> terminatedRealms = new HashMap<>();
     private Cache tlsTunnels;
     private String anonUserName;
     private String chainName;

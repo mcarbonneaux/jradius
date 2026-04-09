@@ -181,13 +181,13 @@ public class AddressPoolImpl implements AddressPool, CacheEventListener
                     return null;
                 }
 
-                if (eIP != null && hwKey.equals(eIP.getValue()))
+                if (eIP != null && hwKey.equals(eIP.getObjectValue()))
                 {
                     /**
                      *  We owned the lease, so let's go ahead and update the IP
                      */
                     
-                    leases.remove(eIP.getKey());
+                    leases.remove(eIP.getObjectKey());
                 }
                 else
                 {
@@ -213,32 +213,32 @@ public class AddressPoolImpl implements AddressPool, CacheEventListener
 
             if (forceNew)
             {
-                if (eIP != null && hwKey.equals(eIP.getValue()))
+                if (eIP != null && hwKey.equals(eIP.getObjectValue()))
                 {
                     /**
                      *  We owned the lease, so let's go ahead and update the IP
                      */
 
-                    leases.remove(eIP.getKey());
+                    leases.remove(eIP.getObjectKey());
                 }
 
                 eHW = new Element(hwKey, nextIP());
             }
             else if (requested != null) 
             {
-                if (!requested.equals(eHW.getValue()))
+                if (!requested.equals(eHW.getObjectValue()))
                 {
                     /**
                      *  Requested IP address does not match leased IP
                      */
 
-                    if (eIP != null && hwKey.equals(eIP.getValue()))
+                    if (eIP != null && hwKey.equals(eIP.getObjectValue()))
                     {
                         /**
                          *  We owned the lease, so let's go ahead and update the IP
                          */
 
-                        leases.remove(eIP.getKey());
+                        leases.remove(eIP.getObjectKey());
                     }
                     else
                     {
@@ -248,14 +248,14 @@ public class AddressPoolImpl implements AddressPool, CacheEventListener
             }
         }
 
-        eIP = new Element(eHW.getValue(), eHW.getKey());
+        eIP = new Element(eHW.getObjectValue(), eHW.getObjectKey());
 
         leases.put(eHW);
         leases.put(eIP);
         
         writeLeaseFile();
         
-        return (InetAddress) eHW.getValue();
+        return (InetAddress) eHW.getObjectValue();
     }
 
     public void writeLeaseFile()
@@ -270,7 +270,7 @@ public class AddressPoolImpl implements AddressPool, CacheEventListener
             {
                 if (o instanceof MACKey)
                 {
-                    InetAddress inet = (InetAddress)leases.get(o).getValue();
+                    InetAddress inet = (InetAddress)leases.get(o).getObjectValue();
                     MACKey macKey = (MACKey)o;
 
                     writer.print(inet.getHostAddress());

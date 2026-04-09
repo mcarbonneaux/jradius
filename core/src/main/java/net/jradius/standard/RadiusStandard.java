@@ -65,7 +65,7 @@ public abstract class RadiusStandard
      * @param check attributes to look for
      * @param ignore attributes to ignore
      */
-    protected static void checkMissing(RadiusPacket p, List list, long[] check, long[] ignore)
+    protected static void checkMissing(RadiusPacket p, List<Long> list, long[] check, long[] ignore)
     {
 	    for (int i=0; i < check.length; i++)
 	    {
@@ -75,7 +75,7 @@ public abstract class RadiusStandard
 	                for (int j=0; j < ignore.length; j++)
 	                    if (check[i] == ignore[j])
 	                        continue;
-                list.add(new Long(check[i]));
+                list.add(Long.valueOf(check[i]));
 	        }
 	    }
 	}

@@ -29,6 +29,7 @@ import org.apache.commons.configuration.HierarchicalXMLConfiguration;
  * JRadius XML Configuration Parser.
  * @author David Bird
  */
+@SuppressWarnings("deprecation")
 public class XMLConfiguration extends HierarchicalXMLConfiguration
 {
     XMLConfiguration(Reader reader) throws ConfigurationException

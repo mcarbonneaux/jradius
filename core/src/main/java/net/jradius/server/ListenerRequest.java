@@ -36,7 +36,7 @@ public abstract class ListenerRequest
 {
     protected JRadiusEvent event;
     protected Listener listener;
-    protected ObjectPool borrowedFromPool;
+    protected ObjectPool<ListenerRequest> borrowedFromPool;
     
     public ListenerRequest()
     {
@@ -96,11 +96,11 @@ public abstract class ListenerRequest
     	event = null;
     }
 
-	public ObjectPool getBorrowedFromPool() {
+	public ObjectPool<ListenerRequest> getBorrowedFromPool() {
 		return borrowedFromPool;
 	}
 
-	public void setBorrowedFromPool(ObjectPool borrowedFromPool) {
+	public void setBorrowedFromPool(ObjectPool<ListenerRequest> borrowedFromPool) {
 		this.borrowedFromPool = borrowedFromPool;
 	}
 }

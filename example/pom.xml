@@ -5,13 +5,13 @@
   <groupId>net.jradius</groupId>
   <artifactId>jradius-example</artifactId>
   <name>${project.artifactId}-${project.version}</name>
-  <version>1.1.6-SNAPSHOT</version>
+  <version>${revision}</version>
   <description>JRadius Examples</description>
   
   <parent>
     <groupId>net.jradius</groupId>
     <artifactId>jradius</artifactId>
-    <version>1.1.6-SNAPSHOT</version>
+    <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -19,19 +19,16 @@
     <dependency>
       <groupId>net.jradius</groupId>
       <artifactId>jradius-core</artifactId>
-      <version>1.1.6-SNAPSHOT</version>
     </dependency>
     
     <dependency>
       <groupId>net.jradius</groupId>
       <artifactId>jradius-dictionary</artifactId>
-      <version>1.1.6-SNAPSHOT</version>
     </dependency>
     
     <dependency>
       <groupId>net.jradius</groupId>
       <artifactId>jradius-extended</artifactId>
-      <version>1.1.6-SNAPSHOT</version>
     </dependency>
 
   </dependencies>
@@ -39,20 +36,12 @@
   <build>
     <plugins>
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-compiler-plugin</artifactId>
-	<configuration>
-	  <source>1.5</source>
-	  <target>1.5</target>
-	</configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.4.2</version>
-        <configuration>
-          <skipTests>true</skipTests>
-        </configuration>
       </plugin>
     </plugins>
   </build>

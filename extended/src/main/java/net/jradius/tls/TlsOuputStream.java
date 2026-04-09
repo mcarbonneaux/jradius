@@ -28,6 +28,7 @@ public class TlsOuputStream extends OutputStream
     }
 
     /** @deprecated Use 'close' instead */
+    @Deprecated
     public void cose() throws IOException
     {
         handler.close();

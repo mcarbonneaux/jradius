@@ -154,7 +154,7 @@ public final class LogConsole extends JComponent implements AdjustmentListener
             {
                 int length = doc.getLength();
                 console.setCaretPosition(length);
-                Rectangle r = console.modelToView(length - 1);
+                Rectangle r = (Rectangle) console.modelToView2D(length - 1);
                 if (r != null)
                 	scrollRectToVisible(r);
             } 

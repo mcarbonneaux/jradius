@@ -93,8 +93,8 @@ public class StandardCheckingHandler extends PacketHandlerBase
     {
         try
         {
-            Class clazz = Class.forName(name);
-            setStandard((RadiusStandard)clazz.newInstance());
+            Class<?> clazz = Class.forName(name);
+            setStandard((RadiusStandard)clazz.getDeclaredConstructor().newInstance());
         }
         catch (Exception e)
         {
