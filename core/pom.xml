@@ -16,71 +16,50 @@
   </parent>
   
   <dependencies>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-configuration</groupId>
-      <artifactId>commons-configuration</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-chain</groupId>
-      <artifactId>commons-chain</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-digester</groupId>
-      <artifactId>commons-digester</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils</artifactId>
-    </dependency>
-    
+    <!-- Required by the RADIUS client: packet and attribute pooling, and logging through Commons Logging -->
     <dependency>
       <groupId>commons-pool</groupId>
       <artifactId>commons-pool</artifactId>
     </dependency>
-    
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+    </dependency>
+    <!--
+      The dependencies below are used only by the JRadius server, session, realm, handler and multi-client
+      classes. They are optional so that RADIUS client users do not inherit them. Server applications
+      declare them explicitly.
+    -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-configuration</groupId>
+      <artifactId>commons-configuration</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-chain</groupId>
+      <artifactId>commons-chain</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-digester</groupId>
+      <artifactId>commons-digester</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <optional>true</optional>
+    </dependency>
     <dependency>
       <groupId>net.sf.ehcache</groupId>
       <artifactId>ehcache-core</artifactId>
+      <optional>true</optional>
     </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j2-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-1.2-api</artifactId>
-    </dependency>
-
-
-<!--
-    <dependency>
-      <groupId>org.gnu</groupId>
-      <artifactId>gnu-crypto</artifactId>
-      <version>2.0.1</version>
-    </dependency>
--->
-
   </dependencies>
   
   <build>
